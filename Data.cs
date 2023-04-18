@@ -22,5 +22,13 @@ namespace assignment_wt2_oauth
 
         [JsonPropertyName("dollar_price")]
         public double dollar_price { get; set; }
+
+        public DateTime TimeStamp 
+        {
+            get
+            {
+                return DateTime.Parse(date);
+            }
+        }
     }
 }
