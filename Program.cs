@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using assignment_wt2_oauth;
+using Microsoft.Extensions.DependencyInjection;
 
 var serviceProvider = new ServiceCollection();
 
