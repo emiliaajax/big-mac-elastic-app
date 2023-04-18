@@ -4,6 +4,6 @@ namespace assignment_wt2_oauth
 {
     public interface IBigMacScraper
     {
-        public Task<IEnumerable<object>> GetData();
+        public Task<IEnumerable<Data>> GetData();
     }
 }

@@ -4,7 +4,7 @@ namespace assignment_wt2_oauth
 {
     public class BigMacScraper : IBigMacScraper
     {
-        public async Task<IEnumerable<object>> GetData()
+        public async Task<IEnumerable<Data>> GetData()
         {
             throw new NotImplementedException();
         }
