@@ -18,80 +18,109 @@ namespace BigMacApi.Services
                 .Size(0)
                 .Query(q => q
                     .Match(m => m
-                        .Field("name.keyword")
-                        .Query("Norway")
+                        .Field(f => f.name)
+                        .Query(name)
                     )
                 )
-                // .Aggregations(a => a
-                //     .DateHistogram("pricesOverTime", dh => dh
-                //         .Field(f => f.TimeStamp)
-                //         .CalendarInterval(DateInterval.Year)
-                //         .Aggregations(aaa => aaa
-                //             .Terms("CountryPrices", t => t
-                //                 .Field(f => f.name)
-                //                 .Aggregations(aa => aa
-                //                     .Average("avgPrice", avg => avg
-                //                         .Field(f => f.local_price)
-                //                     )
-                //                 )
-                //             )
-                //         )
-                //     )
-                // )
+                .Aggregations(a => a
+                    .DateHistogram("pricesOverTime", dh => dh
+                        .Field(f => f.TimeStamp)
+                        .CalendarInterval(DateInterval.Year)
+                   )
+                )
             );
 
-            // var response = await elasticClient.SearchAsync<Price>(s => s
-            //     .Index("bigmacpricesdata")
-            //     .Size(0)
-            //     .Query(q => q
-            //         .Match(m => m
-            //             .Field(f => f.name)
-            //             .Query(name)
-            //         )
-            //     )
-            //     .Aggregations(a => a
-            //         .Terms("CountryPrices", t => t
-            //             .Field(f => f.name)
-            //             .Aggregations(aa => aa
-            //                 .Average("avgLocalPrice", avg => avg
-            //                     .Field(f => f.local_price)
-            //                 )
-            //                 .DateHistogram("pricesOverTime", dh => dh
-            //                     .Field(f => f.TimeStamp)
-            //                     .CalendarInterval(DateInterval.Year)
-            //                     .Aggregations(aaa => aaa
-            //                         .Average("avgPrice", avg => avg
-            //                             .Field(f => f.local_price)
-            //                         )
-            //                     )
-            //                 )
-            //             )
-            //         )
-            //     )
-            // );
-            
-            
-            // var countryBucket = countryPrices?.Buckets.FirstOrDefault(); // Get the first bucket, assuming there's only one country in the result
-            // if (countryBucket == null) return new List<Price>(); // Return empty list if no bucket is found
-
-            // var countryLocalPrice = countryBucket.Average("avgLocalPrice").Value;
-            // var countryPricesOverTime = countryBucket.DateHistogram("pricesOverTime");
-
             var norwayPricesList = new List<Price>();
-            // foreach (var dateHistogramBucket in countryPricesOverTime.Buckets)
-            // {
-            //     var date = dateHistogramBucket.Date;
-            //     var avgPrice = dateHistogramBucket.Average("avgPrice").Value;
-            //     var norwayPrice = new Price
-            //     {
-            //         date = date.ToString("yyyy-MM"),
-            //         name = name,
-            //         local_price = avgPrice.GetValueOrDefault(),
-            //     };
-            //     norwayPricesList.Add(norwayPrice);
-            // }
 
             return norwayPricesList;
+        }
+
+        public async Task<List<Country>> GetMostExpensiveCountries(int limit, string startYear, string endYear) {
+            var response = await elasticClient.SearchAsync<Price>(s => s
+                .Index("bigmacpricesdata")
+                .Size(0)
+                .Query(query => query
+                    .DateRange(range => range
+                        .Field(field => field.TimeStamp)
+                        .GreaterThanOrEquals($"{startYear}-01-01||/d")
+                        .LessThanOrEquals($"{endYear}-12-31||/d")
+                    )
+                )
+                .Aggregations(ag => ag
+                    .Terms("countries", t => t
+                        .Field("name.keyword")
+                        .Size(limit)
+                        .Order(order => order
+                            .Descending("avg_price")
+                        )
+                        .Aggregations(ag1 => ag1
+                            .Average("avg_price", price => price
+                                .Field(f2 => f2.dollar_price)
+                            )
+                        )
+                    )
+                )
+            );
+
+            var countries = response.Aggregations.Terms("countries");
+            var mostExpensiveCountries = new List<Country>();
+
+            if (response.Aggregations == null) {
+                return mostExpensiveCountries;
+            }
+
+            foreach (var bucket in countries.Buckets) {
+                mostExpensiveCountries.Add(new Country {
+                    name = bucket.Key,
+                    price = bucket.Average("avg_price").Value.GetValueOrDefault()
+                });
+            }
+
+            return mostExpensiveCountries;
+        }
+
+        public async Task<List<Country>> GetCheapestCountries(int limit, string startYear, string endYear) {
+            var response = await elasticClient.SearchAsync<Price>(s => s
+                .Index("bigmacpricesdata")
+                .Size(0)
+                .Query(query => query
+                    .DateRange(range => range
+                        .Field(field => field.TimeStamp)
+                        .GreaterThanOrEquals($"{startYear}-01-01||/d")
+                        .LessThanOrEquals($"{endYear}-12-31||/d")
+                    )
+                )
+                .Aggregations(ag => ag
+                    .Terms("countries", t => t
+                        .Field("name.keyword")
+                        .Size(limit)
+                        .Order(order => order
+                            .Ascending("avg_price")
+                        )
+                        .Aggregations(ag1 => ag1
+                            .Average("avg_price", price => price
+                                .Field(f2 => f2.dollar_price)
+                            )
+                        )
+                    )
+                )
+            );
+
+            var countries = response.Aggregations.Terms("countries");
+            var cheapestCountries = new List<Country>();
+
+            if (response.Aggregations == null) {
+                return cheapestCountries;
+            }
+
+            foreach (var bucket in countries.Buckets) {
+                cheapestCountries.Add(new Country {
+                    name = bucket.Key,
+                    price = bucket.Average("avg_price").Value.GetValueOrDefault()
+                });
+            }
+
+            return cheapestCountries;
         }
     }
 }
