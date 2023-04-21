@@ -12,6 +12,38 @@ namespace BigMacApi.Services
             this.elasticClient = elasticClient;
         }
 
+        public async Task<List<PricePerYear>> GetAsync() {
+            var response = await elasticClient.SearchAsync<Price>(s => s
+                .Index("bigmacpricesdata")
+                .Size(0)
+                .Aggregations(a => a
+                    .DateHistogram("pricesOverTime", dh => dh
+                        .Field(f => f.TimeStamp)
+                        .CalendarInterval(DateInterval.Month)
+                        .Aggregations(aa => aa
+                            .Average("avg_price", avg => avg
+                                .Field(f => f.dollar_price)
+                            )
+                        )
+                    )
+                )
+            );
+
+            var pricesOverTime = response.Aggregations.DateHistogram("pricesOverTime");
+            var pricesList = new List<PricePerYear>();
+
+            foreach (var bucket in pricesOverTime.Buckets) {
+                if (bucket.Average("avg_price").Value != null) {
+                    pricesList.Add(new PricePerYear {
+                        TimeStamp = bucket.Date,
+                        price = bucket.Average("avg_price").Value.GetValueOrDefault()
+                    });
+                }
+            }
+
+            return pricesList;
+        }
+
         public async Task<List<Price>> GetCountryAsync(string name) {
             var response = await elasticClient.SearchAsync<Price>(s => s
                 .Index("bigmacpricesdata")

@@ -14,6 +14,10 @@ namespace BigMacApi.Controllers
       this.service = service;
     }
 
+    [HttpGet]
+    public async Task<IEnumerable<PricePerYear>> Get() =>
+      await service.GetAsync();
+
     [HttpGet("country")]
     public async Task<IEnumerable<Price>> GetCountry() => 
       await service.GetCountryAsync("Norway");
