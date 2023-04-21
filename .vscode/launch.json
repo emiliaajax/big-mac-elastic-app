@@ -9,9 +9,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/big-mac-api/bin/Debug/net7.0/big-mac-api.dll",
+      "program": "${workspaceFolder}/BigMacApi/bin/Debug/net7.0/BigMacApi.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/big-mac-api",
+      "cwd": "${workspaceFolder}/BigMacApi",
       "stopAtEntry": false,
       "serverReadyAction": {
         "action": "openExternally",

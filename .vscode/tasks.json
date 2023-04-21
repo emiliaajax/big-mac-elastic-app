@@ -7,7 +7,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/big-mac-api/big-mac-api.csproj",
+        "${workspaceFolder}/BigMacApi/BigMacApi.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -19,7 +19,7 @@
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/big-mac-api/big-mac-api.csproj",
+        "${workspaceFolder}/BigMacApi/BigMacApi.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -33,7 +33,7 @@
         "watch",
         "run",
         "--project",
-        "${workspaceFolder}/big-mac-api/big-mac-api.csproj"
+        "${workspaceFolder}/BigMacApi/BigMacApi.csproj"
       ],
       "problemMatcher": "$msCompile"
     }
