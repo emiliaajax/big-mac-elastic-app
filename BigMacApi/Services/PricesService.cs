@@ -13,7 +13,7 @@ namespace BigMacApi.Services
         }
 
         public async Task<List<PricePerYear>> GetAsync() {
-            var response = await elasticClient.SearchAsync<Price>(s => s
+            var response = await elasticClient.SearchAsync<PriceData>(s => s
                 .Index("bigmacpricesdata")
                 .Size(0)
                 .Aggregations(a => a
@@ -44,8 +44,8 @@ namespace BigMacApi.Services
             return pricesList;
         }
 
-        public async Task<List<Price>> GetCountryAsync(string name) {
-            var response = await elasticClient.SearchAsync<Price>(s => s
+        public async Task<List<PriceData>> GetCountryAsync(string name) {
+            var response = await elasticClient.SearchAsync<PriceData>(s => s
                 .Index("bigmacpricesdata")
                 .Size(0)
                 .Query(q => q
@@ -62,13 +62,13 @@ namespace BigMacApi.Services
                 )
             );
 
-            var norwayPricesList = new List<Price>();
+            var norwayPricesList = new List<PriceData>();
 
             return norwayPricesList;
         }
 
         public async Task<List<Country>> GetMostExpensiveCountries(int limit, string startYear, string endYear) {
-            var response = await elasticClient.SearchAsync<Price>(s => s
+            var response = await elasticClient.SearchAsync<PriceData>(s => s
                 .Index("bigmacpricesdata")
                 .Size(0)
                 .Query(query => query
@@ -112,7 +112,7 @@ namespace BigMacApi.Services
         }
 
         public async Task<List<Country>> GetCheapestCountries(int limit, string startYear, string endYear) {
-            var response = await elasticClient.SearchAsync<Price>(s => s
+            var response = await elasticClient.SearchAsync<PriceData>(s => s
                 .Index("bigmacpricesdata")
                 .Size(0)
                 .Query(query => query

@@ -1,4 +1,4 @@
-public class Price
+public class PriceData
 {
     public string date { get; set; }
     public string currency_code { get; set; }
