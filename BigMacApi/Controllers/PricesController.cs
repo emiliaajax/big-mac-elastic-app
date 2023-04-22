@@ -1,4 +1,3 @@
-using BigMacApi.Models;
 using BigMacApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,12 +15,34 @@ namespace BigMacApi.Controllers
     }
 
     [HttpGet]
-    public async Task<IEnumerable<PricePerYear>> Get() =>
-      await service.GetAsync();
+    public async Task<IActionResult> Get()
+    {
+      var prices = await service.GetAsync();
+
+      var results = prices.Select(price => new
+      {
+        DollarPrice = price.dollar_price,
+        TimeStamp = price.TimeStamp
+      });
+
+      return Ok(results);
+    }
 
     [HttpGet("countries/{country}")]
-    public async Task<IEnumerable<CountryPricePerYear>> GetCountry(string country) =>
-      await service.GetCountryAsync(country);
+    public async Task<IActionResult> GetCountry(string country)
+    {
+      var prices = await service.GetCountryAsync(country);
+
+      var results = prices.Select(price => new
+      {
+        Name = price.name,
+        CurrencyCode = price.currency_code,
+        LocalPrice = price.local_price,
+        TimeStamp = price.TimeStamp
+      });
+
+      return Ok(results);
+    }
 
     [HttpGet("countries")]
     public async Task<IActionResult> GetCountryNames()
@@ -38,17 +59,37 @@ namespace BigMacApi.Controllers
     }
 
     [HttpGet("top-expensive")]
-    public async Task<IEnumerable<Country>> GetMostExpensiveCountries(
+    public async Task<IActionResult> GetMostExpensiveCountries(
       int limit = 10,
       [FromQuery(Name = "start-year")] string startYear = "2000",
-      [FromQuery(Name = "end-year")] string endYear = "2022") =>
-      await service.GetMostExpensiveCountries(limit, startYear, endYear);
+      [FromQuery(Name = "end-year")] string endYear = "2022")
+    {
+      var prices = await service.GetMostExpensiveCountries(limit, startYear, endYear);
+
+      var results = prices.Select(price => new
+      {
+        Name = price.name,
+        DollarPrice = price.dollar_price
+      });
+
+      return Ok(results);
+    }
 
     [HttpGet("top-cheapest")]
-    public async Task<IEnumerable<Country>> GetCheapestCountries(
+    public async Task<IActionResult> GetCheapestCountries(
       int limit = 10,
       [FromQuery(Name = "start-year")] string startYear = "2000",
-      [FromQuery(Name = "end-year")] string endYear = "2022") =>
-      await service.GetCheapestCountries(limit, startYear, endYear);
+      [FromQuery(Name = "end-year")] string endYear = "2022")
+    {
+      var prices = await service.GetCheapestCountries(limit, startYear, endYear);
+
+      var results = prices.Select(price => new
+      {
+        Name = price.name,
+        DollarPrice = price.dollar_price
+      });
+
+      return Ok(results);
+    }
   }
 }

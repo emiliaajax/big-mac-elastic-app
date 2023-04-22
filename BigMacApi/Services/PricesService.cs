@@ -16,7 +16,7 @@ namespace BigMacApi.Services
     /// Gets a list of average Big Mac prices per year based on monthly data.
     /// </summary>
     /// <returns>List of PricePerYear objects.</returns>
-    public async Task<List<PricePerYear>> GetAsync()
+    public async Task<List<PriceData>> GetAsync()
     {
       var response = await elasticClient.SearchAsync<PriceData>(s => s
           .Index("bigmacpricesdata")
@@ -35,16 +35,16 @@ namespace BigMacApi.Services
       );
 
       var pricesOverTime = response.Aggregations.DateHistogram("pricesOverTime");
-      var pricesList = new List<PricePerYear>();
+      var pricesList = new List<PriceData>();
 
       foreach (var bucket in pricesOverTime.Buckets)
       {
         if (bucket.Average("avg_price").Value != null)
         {
-          pricesList.Add(new PricePerYear
+          pricesList.Add(new PriceData
           {
             TimeStamp = bucket.Date,
-            price = bucket.Average("avg_price").Value.GetValueOrDefault()
+            dollar_price = bucket.Average("avg_price").Value.GetValueOrDefault()
           });
         }
       }
@@ -57,7 +57,7 @@ namespace BigMacApi.Services
     /// </summary>
     /// <param name="name">The name of the country.</param>
     /// <returns>List of CountryPricePerYear objects.</returns>
-    public async Task<List<CountryPricePerYear>> GetCountryAsync(string name)
+    public async Task<List<PriceData>> GetCountryAsync(string name)
     {
       var response = await elasticClient.SearchAsync<PriceData>(s => s
           .Index("bigmacpricesdata")
@@ -91,17 +91,17 @@ namespace BigMacApi.Services
       );
 
       var pricesOverTime = response.Aggregations.DateHistogram("pricesOverTime");
-      var pricesList = new List<CountryPricePerYear>();
+      var pricesList = new List<PriceData>();
 
       foreach (var bucket in pricesOverTime.Buckets)
       {
         if (bucket.Average("avg_price").Value != null)
         {
-          pricesList.Add(new CountryPricePerYear
+          pricesList.Add(new PriceData
           {
-            currencyCode = response.Documents.FirstOrDefault()?.currency_code,
+            currency_code = response.Documents.FirstOrDefault()?.currency_code,
             name = response.Documents.FirstOrDefault()?.name,
-            price = bucket.Average("avg_price").Value.GetValueOrDefault(),
+            local_price = bucket.Average("avg_price").Value.GetValueOrDefault(),
             TimeStamp = bucket.Date
           });
         }
@@ -140,7 +140,7 @@ namespace BigMacApi.Services
     /// <param name="startYear">The start year of the date range.</param>
     /// <param name="endYear">The end year of the date range.</param>
     /// <returns>List of Country objects.</returns>
-    public async Task<List<Country>> GetMostExpensiveCountries(int limit, string startYear, string endYear)
+    public async Task<List<PriceData>> GetMostExpensiveCountries(int limit, string startYear, string endYear)
     {
       var response = await elasticClient.SearchAsync<PriceData>(s => s
           .Index("bigmacpricesdata")
@@ -169,7 +169,7 @@ namespace BigMacApi.Services
       );
 
       var countries = response.Aggregations.Terms("countries");
-      var mostExpensiveCountries = new List<Country>();
+      var mostExpensiveCountries = new List<PriceData>();
 
       if (response.Aggregations == null)
       {
@@ -178,10 +178,10 @@ namespace BigMacApi.Services
 
       foreach (var bucket in countries.Buckets)
       {
-        mostExpensiveCountries.Add(new Country
+        mostExpensiveCountries.Add(new PriceData
         {
           name = bucket.Key,
-          price = bucket.Average("avg_price").Value.GetValueOrDefault()
+          dollar_price = bucket.Average("avg_price").Value.GetValueOrDefault()
         });
       }
 
@@ -195,7 +195,7 @@ namespace BigMacApi.Services
     /// <param name="startYear">The start year of the date range.</param>
     /// <param name="endYear">The end year of the date range.</param>
     /// <returns>List of Country objects.</returns>
-    public async Task<List<Country>> GetCheapestCountries(int limit, string startYear, string endYear)
+    public async Task<List<PriceData>> GetCheapestCountries(int limit, string startYear, string endYear)
     {
       var response = await elasticClient.SearchAsync<PriceData>(s => s
         .Index("bigmacpricesdata")
@@ -224,7 +224,7 @@ namespace BigMacApi.Services
       );
 
       var countries = response.Aggregations.Terms("countries");
-      var cheapestCountries = new List<Country>();
+      var cheapestCountries = new List<PriceData>();
 
       if (response.Aggregations == null)
       {
@@ -233,10 +233,10 @@ namespace BigMacApi.Services
 
       foreach (var bucket in countries.Buckets)
       {
-        cheapestCountries.Add(new Country
+        cheapestCountries.Add(new PriceData
         {
           name = bucket.Key,
-          price = bucket.Average("avg_price").Value.GetValueOrDefault()
+          dollar_price = bucket.Average("avg_price").Value.GetValueOrDefault()
         });
       }
 
