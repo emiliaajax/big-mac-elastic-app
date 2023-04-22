@@ -3,182 +3,246 @@ using Nest;
 
 namespace BigMacApi.Services
 {
-    public class PricesService : IPricesService
-    {
+  public class PricesService : IPricesService
+  {
     private readonly IElasticClient elasticClient;
 
-        public PricesService(IElasticClient elasticClient)
+    public PricesService(IElasticClient elasticClient)
+    {
+      this.elasticClient = elasticClient;
+    }
+
+    /// <summary>
+    /// Gets a list of average Big Mac prices per year based on monthly data.
+    /// </summary>
+    /// <returns>List of PricePerYear objects.</returns>
+    public async Task<List<PricePerYear>> GetAsync()
+    {
+      var response = await elasticClient.SearchAsync<PriceData>(s => s
+          .Index("bigmacpricesdata")
+          .Size(0)
+          .Aggregations(a => a
+              .DateHistogram("pricesOverTime", dh => dh
+                  .Field(f => f.TimeStamp)
+                  .CalendarInterval(DateInterval.Month)
+                  .Aggregations(aa => aa
+                      .Average("avg_price", avg => avg
+                          .Field(f => f.dollar_price)
+                      )
+                  )
+              )
+          )
+      );
+
+      var pricesOverTime = response.Aggregations.DateHistogram("pricesOverTime");
+      var pricesList = new List<PricePerYear>();
+
+      foreach (var bucket in pricesOverTime.Buckets)
+      {
+        if (bucket.Average("avg_price").Value != null)
         {
-            this.elasticClient = elasticClient;
+          pricesList.Add(new PricePerYear
+          {
+            TimeStamp = bucket.Date,
+            price = bucket.Average("avg_price").Value.GetValueOrDefault()
+          });
         }
+      }
 
-        public async Task<List<PricePerYear>> GetAsync() {
-            var response = await elasticClient.SearchAsync<PriceData>(s => s
-                .Index("bigmacpricesdata")
-                .Size(0)
-                .Aggregations(a => a
-                    .DateHistogram("pricesOverTime", dh => dh
-                        .Field(f => f.TimeStamp)
-                        .CalendarInterval(DateInterval.Month)
-                        .Aggregations(aa => aa
-                            .Average("avg_price", avg => avg
-                                .Field(f => f.dollar_price)
-                            )
-                        )
-                    )
-                )
-            );
+      return pricesList;
+    }
 
-            var pricesOverTime = response.Aggregations.DateHistogram("pricesOverTime");
-            var pricesList = new List<PricePerYear>();
-
-            foreach (var bucket in pricesOverTime.Buckets) {
-                if (bucket.Average("avg_price").Value != null) {
-                    pricesList.Add(new PricePerYear {
-                        TimeStamp = bucket.Date,
-                        price = bucket.Average("avg_price").Value.GetValueOrDefault()
-                    });
-                }
-            }
-
-            return pricesList;
-        }
-
-    // PER COUNTRY
+    /// <summary>
+    /// Gets a list of average Big Mac prices per year for a specific country.
+    /// </summary>
+    /// <param name="name">The name of the country.</param>
+    /// <returns>List of CountryPricePerYear objects.</returns>
     public async Task<List<CountryPricePerYear>> GetCountryAsync(string name)
     {
-        var response = await elasticClient.SearchAsync<PriceData>(s => s
-            .Index("bigmacpricesdata")
-            .Size(1)
-            .Query(q => q
-                .Match(m => m
-                    .Field(f => f.name)
-                    .Query(name)
-                )
-            )
-            .Aggregations(a => a
-                .DateHistogram("pricesOverTime", dh => dh
-                    .Field(f => f.TimeStamp)
-                    .CalendarInterval(DateInterval.Month)
-                            .Aggregations(aa => aa
-                                .Average("avg_price", avg => avg
-                                    .Field(f => f.local_price)
-                                )
-                            )
-                )
-            )
-            .Source(src => src
-                .Includes(i => i
-                    .Fields(
-                        f => f.currency_code
-                    )
-                )
-            )
-        );
+      var countryName = name.Replace("-", " ");
 
-        var pricesOverTime = response.Aggregations.DateHistogram("pricesOverTime");
-        var pricesList = new List<CountryPricePerYear>();
+      var response = await elasticClient.SearchAsync<PriceData>(s => s
+          .Index("bigmacpricesdata")
+          .Size(1)
+          .Query(q => q
+              .MatchPhrase(m => m
+                  .Field(f => f.name)
+                  .Query(name)
+                  .Analyzer("standard")
+              )
+          )
+          .Aggregations(a => a
+              .DateHistogram("pricesOverTime", dh => dh
+                  .Field(f => f.TimeStamp)
+                  .CalendarInterval(DateInterval.Month)
+                          .Aggregations(aa => aa
+                              .Average("avg_price", avg => avg
+                                  .Field(f => f.local_price)
+                              )
+                          )
+              )
+          )
+          .Source(src => src
+              .Includes(i => i
+                  .Fields(
+                      f => f.name,
+                      f => f.currency_code
+                  )
+              )
+          )
+      );
 
-        foreach (var bucket in pricesOverTime.Buckets) {
-            if (bucket.Average("avg_price").Value != null) {
-                pricesList.Add(new CountryPricePerYear {
-                    currencyCode = response.Documents.FirstOrDefault()?.currency_code,
-                    name = name,
-                    price = bucket.Average("avg_price").Value.GetValueOrDefault(),
-                    TimeStamp = bucket.Date
-                });
-            }
+      var pricesOverTime = response.Aggregations.DateHistogram("pricesOverTime");
+      var pricesList = new List<CountryPricePerYear>();
+
+      foreach (var bucket in pricesOverTime.Buckets)
+      {
+        if (bucket.Average("avg_price").Value != null)
+        {
+          pricesList.Add(new CountryPricePerYear
+          {
+            currencyCode = response.Documents.FirstOrDefault()?.currency_code,
+            name = response.Documents.FirstOrDefault()?.name,
+            price = bucket.Average("avg_price").Value.GetValueOrDefault(),
+            TimeStamp = bucket.Date
+          });
         }
+      }
 
-        return pricesList;
+      return pricesList;
     }
 
-        public async Task<List<Country>> GetMostExpensiveCountries(int limit, string startYear, string endYear) {
-            var response = await elasticClient.SearchAsync<PriceData>(s => s
-                .Index("bigmacpricesdata")
-                .Size(0)
-                .Query(query => query
-                    .DateRange(range => range
-                        .Field(field => field.TimeStamp)
-                        .GreaterThanOrEquals($"{startYear}-01-01||/d")
-                        .LessThanOrEquals($"{endYear}-12-31||/d")
-                    )
-                )
-                .Aggregations(ag => ag
-                    .Terms("countries", t => t
-                        .Field("name.keyword")
-                        .Size(limit)
-                        .Order(order => order
-                            .Descending("avg_price")
-                        )
-                        .Aggregations(ag1 => ag1
-                            .Average("avg_price", price => price
-                                .Field(f2 => f2.dollar_price)
-                            )
-                        )
-                    )
-                )
-            );
+    /// <summary>
+    /// Gets a list of unique country names that have Big Mac price
+    /// </summary>
+    /// <returns>List of country names.</returns>
+    public async Task<List<string>> GetUniqueCountryNamesAsync()
+    {
+      var response = await elasticClient.SearchAsync<PriceData>(s => s
+          .Index("bigmacpricesdata")
+          .Size(0)
+          .Aggregations(a => a
+              .Terms("countries", t => t
+                  .Field(f => f.name.Suffix("keyword"))
+                  .Size(int.MaxValue)
+              )
+          )
+      );
 
-            var countries = response.Aggregations.Terms("countries");
-            var mostExpensiveCountries = new List<Country>();
+      var countries = response.Aggregations.Terms("countries");
+      var uniqueCountryNames = countries.Buckets.Select(b => b.Key).ToList();
 
-            if (response.Aggregations == null) {
-                return mostExpensiveCountries;
-            }
-
-            foreach (var bucket in countries.Buckets) {
-                mostExpensiveCountries.Add(new Country {
-                    name = bucket.Key,
-                    price = bucket.Average("avg_price").Value.GetValueOrDefault()
-                });
-            }
-
-            return mostExpensiveCountries;
-        }
-
-        public async Task<List<Country>> GetCheapestCountries(int limit, string startYear, string endYear) {
-            var response = await elasticClient.SearchAsync<PriceData>(s => s
-                .Index("bigmacpricesdata")
-                .Size(0)
-                .Query(query => query
-                    .DateRange(range => range
-                        .Field(field => field.TimeStamp)
-                        .GreaterThanOrEquals($"{startYear}-01-01||/d")
-                        .LessThanOrEquals($"{endYear}-12-31||/d")
-                    )
-                )
-                .Aggregations(ag => ag
-                    .Terms("countries", t => t
-                        .Field("name.keyword")
-                        .Size(limit)
-                        .Order(order => order
-                            .Ascending("avg_price")
-                        )
-                        .Aggregations(ag1 => ag1
-                            .Average("avg_price", price => price
-                                .Field(f2 => f2.dollar_price)
-                            )
-                        )
-                    )
-                )
-            );
-
-            var countries = response.Aggregations.Terms("countries");
-            var cheapestCountries = new List<Country>();
-
-            if (response.Aggregations == null) {
-                return cheapestCountries;
-            }
-
-            foreach (var bucket in countries.Buckets) {
-                cheapestCountries.Add(new Country {
-                    name = bucket.Key,
-                    price = bucket.Average("avg_price").Value.GetValueOrDefault()
-                });
-            }
-
-            return cheapestCountries;
-        }
+      return uniqueCountryNames;
     }
+
+    /// <summary>
+    /// Gets a list of the top N most expensive countries based on their average Big Mac price within a specific date range.
+    /// </summary>
+    /// <param name="limit">The maximum number of countries to return.</param>
+    /// <param name="startYear">The start year of the date range.</param>
+    /// <param name="endYear">The end year of the date range.</param>
+    /// <returns>List of Country objects.</returns>
+    public async Task<List<Country>> GetMostExpensiveCountries(int limit, string startYear, string endYear)
+    {
+      var response = await elasticClient.SearchAsync<PriceData>(s => s
+          .Index("bigmacpricesdata")
+          .Size(0)
+          .Query(query => query
+              .DateRange(range => range
+                  .Field(field => field.TimeStamp)
+                  .GreaterThanOrEquals($"{startYear}-01-01||/d")
+                  .LessThanOrEquals($"{endYear}-12-31||/d")
+              )
+          )
+          .Aggregations(ag => ag
+              .Terms("countries", t => t
+                  .Field("name.keyword")
+                  .Size(limit)
+                  .Order(order => order
+                      .Descending("avg_price")
+                  )
+                  .Aggregations(ag1 => ag1
+                      .Average("avg_price", price => price
+                          .Field(f2 => f2.dollar_price)
+                      )
+                  )
+              )
+          )
+      );
+
+      var countries = response.Aggregations.Terms("countries");
+      var mostExpensiveCountries = new List<Country>();
+
+      if (response.Aggregations == null)
+      {
+        return mostExpensiveCountries;
+      }
+
+      foreach (var bucket in countries.Buckets)
+      {
+        mostExpensiveCountries.Add(new Country
+        {
+          name = bucket.Key,
+          price = bucket.Average("avg_price").Value.GetValueOrDefault()
+        });
+      }
+
+      return mostExpensiveCountries;
+    }
+
+    /// <summary>
+    /// Gets a list of the top N cheapest countries based on their average Big Mac price within a specific date range.
+    /// </summary>
+    /// <param name="limit">The maximum number of countries to return.</param>
+    /// <param name="startYear">The start year of the date range.</param>
+    /// <param name="endYear">The end year of the date range.</param>
+    /// <returns>List of Country objects.</returns>
+    public async Task<List<Country>> GetCheapestCountries(int limit, string startYear, string endYear)
+    {
+      var response = await elasticClient.SearchAsync<PriceData>(s => s
+          .Index("bigmacpricesdata")
+          .Size(0)
+          .Query(query => query
+              .DateRange(range => range
+                  .Field(field => field.TimeStamp)
+                  .GreaterThanOrEquals($"{startYear}-01-01||/d")
+                  .LessThanOrEquals($"{endYear}-12-31||/d")
+              )
+          )
+          .Aggregations(ag => ag
+              .Terms("countries", t => t
+                  .Field("name.keyword")
+                  .Size(limit)
+                  .Order(order => order
+                      .Ascending("avg_price")
+                  )
+                  .Aggregations(ag1 => ag1
+                      .Average("avg_price", price => price
+                          .Field(f2 => f2.dollar_price)
+                      )
+                  )
+              )
+          )
+      );
+
+      var countries = response.Aggregations.Terms("countries");
+      var cheapestCountries = new List<Country>();
+
+      if (response.Aggregations == null)
+      {
+        return cheapestCountries;
+      }
+
+      foreach (var bucket in countries.Buckets)
+      {
+        cheapestCountries.Add(new Country
+        {
+          name = bucket.Key,
+          price = bucket.Average("avg_price").Value.GetValueOrDefault()
+        });
+      }
+
+      return cheapestCountries;
+    }
+  }
 }
