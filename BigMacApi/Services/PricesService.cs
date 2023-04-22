@@ -64,8 +64,6 @@ namespace BigMacApi.Services
                                 .Average("avg_price", avg => avg
                                     .Field(f => f.local_price)
                                 )
-                                // .Average("currency", curr => curr
-                                //     .Field("currency_code.keyword") )
                             )
                 )
             )
