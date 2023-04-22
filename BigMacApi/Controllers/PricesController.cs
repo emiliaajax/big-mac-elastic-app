@@ -6,7 +6,7 @@ namespace BigMacApi.Controllers
 {
   [ApiController]
   [Route("api/prices")]
-  public class PricesController {
+  public class PricesController : ControllerBase {
     private readonly IPricesService service;
 
     public PricesController(IPricesService service)
@@ -22,9 +22,17 @@ namespace BigMacApi.Controllers
     public async Task<IEnumerable<CountryPricePerYear>> GetCountry(string country) => 
       await service.GetCountryAsync(country);
 
-    [HttpGet("countries")]
-    public async Task<List<string>> GetCountryNames() =>
-      await service.GetUniqueCountryNamesAsync();
+    [HttpGet("countries", Name = "GetUniqueCountryNames")]
+    public async Task<IActionResult> GetCountryNames() {
+      var response = await service.GetUniqueCountryNamesAsync();
+
+      var result = response.Select(c => new {
+        Name = c,
+        Link = Url.Action("GetCountry", "Prices", new { country = c.ToLower().Replace(" ", "-") }, Request.Scheme, HttpContext.Request.Host.Value)
+      });
+
+      return Ok(result);
+    }
 
     [HttpGet("top-expensive")]
     public async Task<IEnumerable<Country>> GetMostExpensiveCountries(
