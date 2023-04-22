@@ -1,0 +1,38 @@
+[*.cs]
+##
+## StyleCop.Analyzers
+## Source: https://dev.to/srmagura/c-linting-and-formatting-tools-in-2021-bna (Retrieved 2023-04-22)
+##
+
+# The name of a C# element does not begin with an upper-case letter.
+dotnet_diagnostic.SA1300.severity = none
+
+# Using directive should appear within a namespace declaration
+dotnet_diagnostic.SA1200.severity = None
+
+# XML comment analysis is disabled due to project configuration
+dotnet_diagnostic.SA0001.severity = None
+
+# The file header is missing or not located at the top of the file
+dotnet_diagnostic.SA1633.severity = None
+    
+# Prefix local calls with this
+dotnet_diagnostic.SA1101.severity = None
+    
+# 'public' members should come before 'private' members
+dotnet_diagnostic.SA1202.severity = None
+    
+# Use trailing comma in multi-line initializers
+dotnet_diagnostic.SA1413.severity = None
+
+# Elements should be separated by blank line
+dotnet_diagnostic.SA1516.severity = None
+
+# Element should not be on a single line
+dotnet_diagnostic.SA1502.severity = None
+
+# Closing parenthesis should not be preceded by a space
+dotnet_diagnostic.SA1009.severity = None
+
+# Closing parenthesis should be on line of last parameter
+dotnet_diagnostic.SA1111.severity = None

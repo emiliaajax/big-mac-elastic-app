@@ -1,4 +1,4 @@
-using System;
+using BigMacApi.Models;
 using Nest;
 
 namespace BigMacApi.Services
@@ -59,8 +59,6 @@ namespace BigMacApi.Services
     /// <returns>List of CountryPricePerYear objects.</returns>
     public async Task<List<CountryPricePerYear>> GetCountryAsync(string name)
     {
-      var countryName = name.Replace("-", " ");
-
       var response = await elasticClient.SearchAsync<PriceData>(s => s
           .Index("bigmacpricesdata")
           .Size(1)
@@ -200,29 +198,29 @@ namespace BigMacApi.Services
     public async Task<List<Country>> GetCheapestCountries(int limit, string startYear, string endYear)
     {
       var response = await elasticClient.SearchAsync<PriceData>(s => s
-          .Index("bigmacpricesdata")
-          .Size(0)
-          .Query(query => query
-              .DateRange(range => range
-                  .Field(field => field.TimeStamp)
-                  .GreaterThanOrEquals($"{startYear}-01-01||/d")
-                  .LessThanOrEquals($"{endYear}-12-31||/d")
-              )
-          )
-          .Aggregations(ag => ag
-              .Terms("countries", t => t
-                  .Field("name.keyword")
-                  .Size(limit)
-                  .Order(order => order
-                      .Ascending("avg_price")
-                  )
-                  .Aggregations(ag1 => ag1
-                      .Average("avg_price", price => price
-                          .Field(f2 => f2.dollar_price)
-                      )
-                  )
-              )
-          )
+        .Index("bigmacpricesdata")
+        .Size(0)
+        .Query(query => query
+            .DateRange(range => range
+                .Field(field => field.TimeStamp)
+                .GreaterThanOrEquals($"{startYear}-01-01||/d")
+                .LessThanOrEquals($"{endYear}-12-31||/d")
+            )
+        )
+        .Aggregations(ag => ag
+            .Terms("countries", t => t
+                .Field("name.keyword")
+                .Size(limit)
+                .Order(order => order
+                    .Ascending("avg_price")
+                )
+                .Aggregations(ag1 => ag1
+                    .Average("avg_price", price => price
+                        .Field(f2 => f2.dollar_price)
+                    )
+                )
+            )
+        )
       );
 
       var countries = response.Aggregations.Terms("countries");

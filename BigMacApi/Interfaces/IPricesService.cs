@@ -1,4 +1,4 @@
-using System;
+using BigMacApi.Models;
 
 namespace BigMacApi.Services
 {

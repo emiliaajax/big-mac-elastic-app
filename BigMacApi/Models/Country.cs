@@ -1,5 +1,8 @@
-public class Country
+namespace BigMacApi.Models
 {
-    public string? name { get; set; }
-    public double price { get; set; }
+    public class Country
+    {
+        public string? name { get; set; }
+        public double price { get; set; }
+    }
 }
