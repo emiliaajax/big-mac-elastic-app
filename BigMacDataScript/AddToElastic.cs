@@ -1,4 +1,3 @@
-using System;
 using Nest;
 
 namespace BigMacDataScript
@@ -18,9 +17,10 @@ namespace BigMacDataScript
             var batchSize = 200;
             var shipped = 0;
 
-            while(data.Skip(shipped).Take(batchSize).Any()) {
+            while (data.Skip(shipped).Take(batchSize).Any())
+            {
                 var batch = data.Skip(shipped).Take(batchSize);
-                var response = await elasticClient.BulkAsync(b => b.CreateMany(batch).Index(index));
+                await elasticClient.BulkAsync(b => b.CreateMany(batch).Index(index));
                 shipped += batchSize;
             }
         }

@@ -9,8 +9,15 @@ namespace BigMacDataScript
         {
             using (StreamReader r = new StreamReader("./data/BigMacPrice.json"))
                 {
-                    string json =  await r.ReadToEndAsync();
-                    IEnumerable<Price> data = JsonConvert.DeserializeObject<IEnumerable<Price>>(json);
+                    string json = await r.ReadToEndAsync();
+
+                    IEnumerable<Price>? data = JsonConvert.DeserializeObject<IEnumerable<Price>>(json);
+
+                    if (data == null)
+                    {
+                        return Enumerable.Empty<Price>();
+                    }
+
                     return data;
                 }
         }

@@ -15,6 +15,11 @@ var url = configuration["ElasticSearch:URL"];
 var username = configuration["ElasticSearch:Username"];
 var password = configuration["ElasticSearch:Password"];
 
+if (url is null)
+{
+    throw new ArgumentNullException(url, "The ElasticSearch URL configuration is missing.");
+}
+
 var connectionSettings = new ConnectionSettings(new Uri(url));
 connectionSettings.DisableDirectStreaming();
 connectionSettings.BasicAuthentication(username, password);
@@ -30,6 +35,18 @@ var serviceProvider = new ServiceCollection()
 
 var bigMacScraper = serviceProvider.GetService<IBigMacScraper>();
 var addToElastic = serviceProvider.GetService<AddToElastic>();
+
+if (bigMacScraper is null)
+{
+  var errorMessage = "The IBigMacScraper service is not registered.";
+  throw new ArgumentNullException(errorMessage);
+}
+
+if (addToElastic is null)
+{
+  var errorMessage = "The AddToElastic service is not registered.";
+  throw new ArgumentNullException(errorMessage);
+}
 
 var data = await bigMacScraper.GetData();
 await addToElastic.AddData(data);

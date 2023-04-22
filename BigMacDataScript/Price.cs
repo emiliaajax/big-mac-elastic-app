@@ -1,4 +1,3 @@
-using System;
 using System.Text.Json.Serialization;
 
 namespace BigMacDataScript
@@ -6,13 +5,13 @@ namespace BigMacDataScript
     public class Price
     {
         [JsonPropertyName("date")]
-        public string date { get; set; }
+        public string? date { get; set; }
 
         [JsonPropertyName("currency_code")]
-        public string currency_code { get; set; }
+        public string? currency_code { get; set; }
 
         [JsonPropertyName("name")]
-        public string name { get; set; }
+        public string? name { get; set; }
 
         [JsonPropertyName("local_price")]
         public double local_price { get; set; }
@@ -23,12 +22,24 @@ namespace BigMacDataScript
         [JsonPropertyName("dollar_price")]
         public double dollar_price { get; set; }
 
-        public DateTime TimeStamp 
+        public DateTime TimeStamp
         {
             get
             {
-                return DateTime.Parse(date);
+                return GetTimeStamp();
             }
+        }
+
+        private DateTime GetTimeStamp()
+        {
+            DateTime timeStamp;
+
+            if (!DateTime.TryParse(date, out timeStamp))
+            {
+                throw new FormatException("Invalid date format");
+            }
+
+            return timeStamp;
         }
     }
 }
