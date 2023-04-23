@@ -15,6 +15,7 @@ function TopBar () {
 
   const onDrowdownMenuClick = () => {
     setShowDropdownMenu(!showDropdownMenu)
+    console.log(location.pathname)
   }
 
   useEffect(() => {
@@ -41,22 +42,25 @@ function TopBar () {
             </Link>
           </div>
           <div onClick={onDrowdownMenuClick}>
-            <span style={{ color: showDropdownMenu ? '#FFFFFF' : '#838383' }}>
+            <span style={{ color: showDropdownMenu 
+              || (location.pathname !== '/'
+              && location.pathname !== '/top-expensive'
+              && location.pathname !== '/top-cheapest') ? '#FFFFFF' : '#838383' }}>
               Country
             </span>
             { showDropdownMenu
             ? <div
-              style={{
-                position: 'absolute',
-                left: '13%',
-                backgroundColor: '#141414',
-                height: '610px',
-                width: '120px',
-                borderRadius: '5px',
-                overflow: 'scroll',
-                zIndex: 1,
-                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
-              }}
+                style={{
+                  position: 'absolute',
+                  left: '13%',
+                  backgroundColor: '#141414',
+                  height: '610px',
+                  width: '120px',
+                  borderRadius: '5px',
+                  overflow: 'scroll',
+                  zIndex: 1,
+                  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+                }}
               >
                 {sortedCountries?.map((country, index) => (
                     <Link
@@ -75,12 +79,12 @@ function TopBar () {
             : <></>}
           </div>
           <div>
-            <Link to='/top-expensive' style={{ color: location.pathname === '/discover' ? '#FFFFFF' : '#838383' }}>
+            <Link to='/top-expensive' style={{ color: location.pathname === '/top-expensive' && !showDropdownMenu ? '#FFFFFF' : '#838383' }}>
               Top Most Expensive
             </Link>
           </div>
           <div>
-            <Link to='/top-cheapest' style={{ color: location.pathname === '/discover' ? '#FFFFFF' : '#838383' }}>
+            <Link to='/top-cheapest' style={{ color: location.pathname === '/top-cheapest' && !showDropdownMenu ? '#FFFFFF' : '#838383' }}>
               Top Cheapest
             </Link>
           </div>
