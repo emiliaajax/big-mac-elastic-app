@@ -20,9 +20,9 @@ export const getPrices = createAsyncThunk('prices', async (thunkAPI) => {
   }
 })
 
-export const getPricesForCountry = createAsyncThunk('prices/countries', async (thunkAPI) => {
+export const getPricesForCountry = createAsyncThunk('prices/countries', async (country, thunkAPI) => {
   try {
-    return await pricesService.getPricesForCountry()
+    return await pricesService.getPricesForCountry(country)
   } catch (error) {
     const message = error.response.data.message 
       || (error.response && error.response.data && error.response.message) 

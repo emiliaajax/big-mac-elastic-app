@@ -1,4 +1,4 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts'
 
 function LinePlot ({ data, xAxisProperty, yAxisProperty, lineName, yAxisName}) {
   return (
@@ -13,12 +13,11 @@ function LinePlot ({ data, xAxisProperty, yAxisProperty, lineName, yAxisName}) {
         bottom: 5,
       }}
     >
-      {/* <CartesianGrid strokeDasharray="3 3" /> */}
       <XAxis
         dataKey={xAxisProperty}
         tickFormatter={(dateStr) => new Date(dateStr).toLocaleDateString()}
       />
-      <YAxis label={{ value: `${yAxisName}`, position: 'insideTopLeft' }}/>
+      <YAxis label={{ value: `${yAxisName}`, position: 'insideTopLeft', dx: -20, dy: -10 }}/>
       <Tooltip labelFormatter={(dateStr) => new Date(dateStr).toLocaleDateString()}/>
       <Line
         type="monotone"

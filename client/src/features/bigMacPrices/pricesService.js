@@ -11,6 +11,7 @@ const getPrices = async () => {
 const getPricesForCountry = async (country) => {
   const response = await axios.get(`${API_URL}/countries/${country}`)
 
+  console.log(`${API_URL}/countries/${country}`)
   return response.data
 }
 
