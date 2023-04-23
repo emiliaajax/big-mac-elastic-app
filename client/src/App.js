@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home.js'
 import BaseLayout from './components/BaseLayout/BaseLayout.js'
 import Country from './pages/Country/Country.js'
-import MostExpensive from './pages/MostExpensive/MostExpensive.js'
+import TopExpensiveCountries from './pages/TopExpensiveCountries/TopExpensiveCountries.js'
+import TopCheapestCountries from './pages/TopCheapestCountries/TopCheapestCountries.js'
 
 function App() {
   return (
@@ -15,8 +16,12 @@ function App() {
               path='/'
             />
             <Route
-              element={<BaseLayout><MostExpensive /></BaseLayout>}
+              element={<BaseLayout><TopExpensiveCountries /></BaseLayout>}
               path='/top-expensive'
+            />
+            <Route
+              element={<BaseLayout><TopCheapestCountries /></BaseLayout>}
+              path='/top-cheapest'
             />
             <Route
               element={<BaseLayout><Country /></BaseLayout>}
