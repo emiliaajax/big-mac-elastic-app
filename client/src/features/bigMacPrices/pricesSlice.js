@@ -113,3 +113,6 @@ export const pricesSlice = createSlice({
       })
   }
 })
+
+export const { reset } = pricesSlice.actions
+export default pricesSlice.reducer
