@@ -1,5 +1,3 @@
-using System;
-
 namespace BigMacDataScript
 {
     public interface IBigMacScraper
