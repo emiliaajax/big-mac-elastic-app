@@ -11,6 +11,7 @@ function TopBar () {
   const { countries } = useSelector((state) => state.prices)
   
   const [ showDropdownMenu, setShowDropdownMenu ] = useState(false)
+  const [ sortedCountries, setSortedCountries ] = useState([])
 
   const onDrowdownMenuClick = () => {
     setShowDropdownMenu(!showDropdownMenu)
@@ -19,6 +20,16 @@ function TopBar () {
   useEffect(() => {
     dispatch(getCountries())
   }, [dispatch])
+
+  useEffect(() => {
+    if (countries) {
+    const sortedCountries = Array.from(countries)
+
+    sortedCountries.sort((a, b) => (a.name > b.name) ? 1 : -1)
+
+    setSortedCountries(sortedCountries)
+    }
+  }, [countries])
 
   return (
     <>
@@ -47,7 +58,7 @@ function TopBar () {
                 boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
               }}
               >
-                {countries?.map((country, index) => (
+                {sortedCountries?.map((country, index) => (
                     <Link
                       to={`/${country.endpoint}`}
                       key={index}
