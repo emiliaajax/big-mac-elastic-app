@@ -3,10 +3,17 @@ using Nest;
 
 namespace BigMacApi.Services
 {
+  /// <summary>
+  /// Service for interacting with Big Mac price data in Elasticsearch.
+  /// </summary>
   public class PricesService : IPricesService
   {
     private readonly IElasticClient elasticClient;
 
+    /// <summary>
+    /// Initializes a new instance of the PricesService class with the specified Elasticsearch client.
+    /// </summary>
+    /// <param name="elasticClient">The Elasticsearch client to be used by the service.</param>
     public PricesService(IElasticClient elasticClient)
     {
       this.elasticClient = elasticClient;
