@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Home from './pages/Home.js'
+import Home from './pages/Home/Home.js'
 import BaseLayout from './components/BaseLayout/BaseLayout.js'
 import Country from './pages/Country/Country.js'
 import TopExpensiveCountries from './pages/TopExpensiveCountries/TopExpensiveCountries.js'

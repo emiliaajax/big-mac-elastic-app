@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getPrices } from '../features/bigMacPrices/pricesSlice.js'
-import LinePlot from '../components/LinePlot/LinePlot.js'
+import { getPrices } from '../../features/bigMacPrices/pricesSlice.js'
+import LinePlot from '../../components/LinePlot/LinePlot.js'
 
 function Home() {
   const dispatch = useDispatch()
