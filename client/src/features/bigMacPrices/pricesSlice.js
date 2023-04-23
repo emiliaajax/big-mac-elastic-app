@@ -8,15 +8,65 @@ export const initialState = {
   message: ''
 }
 
-export const getPrices = createAsyncThunk('prices', async (thunkAPI) => {})
+export const getPrices = createAsyncThunk('prices', async (thunkAPI) => {
+  try {
+    return await pricesService.getPrices()
+  } catch (error) {
+    const message = error.response.data.message 
+      || (error.response && error.response.data && error.response.message) 
+      || error.message 
+      || error.toString()
+    return thunkAPI.rejectWithValue(message)
+  }
+})
 
-export const getPricesForCountry = createAsyncThunk('prices/countries', async (thunkAPI) => {})
+export const getPricesForCountry = createAsyncThunk('prices/countries', async (thunkAPI) => {
+  try {
+    return await pricesService.getPricesForCountry()
+  } catch (error) {
+    const message = error.response.data.message 
+      || (error.response && error.response.data && error.response.message) 
+      || error.message 
+      || error.toString()
+    return thunkAPI.rejectWithValue(message)
+  }
+})
 
-export const getCountries = createAsyncThunk('countries', async (thunkAPI) => {})
+export const getCountries = createAsyncThunk('countries', async (thunkAPI) => {
+  try {
+    return await pricesService.getCountries()
+  } catch (error) {
+    const message = error.response.data.message 
+      || (error.response && error.response.data && error.response.message) 
+      || error.message 
+      || error.toString()
+    return thunkAPI.rejectWithValue(message)
+  }
+})
 
-export const getMostExpensiveCountries = createAsyncThunk('countries/most-expensive', async (thunkAPI) => {})
+export const getMostExpensiveCountries = createAsyncThunk('countries/most-expensive', async (thunkAPI) => {
+  try {
+    return await pricesService.getMostExpensiveCountries()
+  } catch (error) {
+    const message = error.response.data.message 
+      || (error.response && error.response.data && error.response.message) 
+      || error.message 
+      || error.toString()
+    return thunkAPI.rejectWithValue(message)
+  }
+})
 
-export const getCheapestCountries = createAsyncThunk('countries/cheapest', async (thunkAPI) => {})
+export const getCheapestCountries = createAsyncThunk('countries/cheapest', async (thunkAPI) => {
+  try {
+    return await pricesService.getCheapestCountries()
+  } catch (error) {
+    const message = error.response.data.message 
+      || (error.response && error.response.data && error.response.message) 
+      || error.message 
+      || error.toString()
+    return thunkAPI.rejectWithValue(message)
+  }
+})
 
 export const pricesSlice = createSlice({
   name: 'prices',
