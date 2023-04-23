@@ -75,13 +75,13 @@ function TopBar () {
             : <></>}
           </div>
           <div>
-            <Link to='/most-expensive' style={{ color: location.pathname === '/discover' ? '#FFFFFF' : '#838383' }}>
-              Most Expensive
+            <Link to='/top-expensive' style={{ color: location.pathname === '/discover' ? '#FFFFFF' : '#838383' }}>
+              Top Most Expensive
             </Link>
           </div>
           <div>
-            <Link to='/cheapest' style={{ color: location.pathname === '/discover' ? '#FFFFFF' : '#838383' }}>
-              Cheapest
+            <Link to='/top-cheapest' style={{ color: location.pathname === '/discover' ? '#FFFFFF' : '#838383' }}>
+              Top Cheapest
             </Link>
           </div>
         </div>

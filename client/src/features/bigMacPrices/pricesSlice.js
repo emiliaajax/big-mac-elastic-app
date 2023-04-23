@@ -44,9 +44,9 @@ export const getCountries = createAsyncThunk('countries', async (thunkAPI) => {
   }
 })
 
-export const getMostExpensiveCountries = createAsyncThunk('countries/most-expensive', async (thunkAPI) => {
+export const getTopExpensiveCountries = createAsyncThunk('countries/most-expensive', async (thunkAPI) => {
   try {
-    return await pricesService.getMostExpensiveCountries()
+    return await pricesService.getTopExpensiveCountries()
   } catch (error) {
     const message = error.response.data.message 
       || (error.response && error.response.data && error.response.message) 
@@ -56,9 +56,9 @@ export const getMostExpensiveCountries = createAsyncThunk('countries/most-expens
   }
 })
 
-export const getCheapestCountries = createAsyncThunk('countries/cheapest', async (thunkAPI) => {
+export const getTopCheapestCountries = createAsyncThunk('countries/cheapest', async (thunkAPI) => {
   try {
-    return await pricesService.getCheapestCountries()
+    return await pricesService.getTopCheapestCountries()
   } catch (error) {
     const message = error.response.data.message 
       || (error.response && error.response.data && error.response.message) 
@@ -131,34 +131,34 @@ export const pricesSlice = createSlice({
       .addCase(getCountries.pending, (state, action) => {
         state.isPending = true
       })
-      .addCase(getMostExpensiveCountries.fulfilled, (state, action) => {
+      .addCase(getTopExpensiveCountries.fulfilled, (state, action) => {
         state.isError = false
         state.isSuccess = true
         state.isPending = false
         state.expensiveCountries = action.payload
       })
-      .addCase(getMostExpensiveCountries.rejected, (state, action) => {
+      .addCase(getTopExpensiveCountries.rejected, (state, action) => {
         state.isError = true
         state.isSuccess = false
         state.isPending = false
         state.expensiveCountries = null
       })
-      .addCase(getMostExpensiveCountries.pending, (state, action) => {
+      .addCase(getTopExpensiveCountries.pending, (state, action) => {
         state.isPending = true
       })
-      .addCase(getCheapestCountries.fulfilled, (state, action) => {
+      .addCase(getTopCheapestCountries.fulfilled, (state, action) => {
         state.isError = false
         state.isSuccess = true
         state.isPending = false
         state.cheapestCountries = action.payload
       })
-      .addCase(getCheapestCountries.rejected, (state, action) => {
+      .addCase(getTopCheapestCountries.rejected, (state, action) => {
         state.isError = true
         state.isSuccess = false
         state.isPending = false
         state.cheapestCountries = null
       })
-      .addCase(getCheapestCountries.pending, (state, action) => {
+      .addCase(getTopCheapestCountries.pending, (state, action) => {
         state.isPending = true
       })
   }

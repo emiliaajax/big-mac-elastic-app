@@ -11,7 +11,6 @@ const getPrices = async () => {
 const getPricesForCountry = async (country) => {
   const response = await axios.get(`${API_URL}/countries/${country}`)
 
-  console.log(`${API_URL}/countries/${country}`)
   return response.data
 }
 
@@ -21,14 +20,14 @@ const getCountries = async () => {
   return response.data
 }
 
-const getMostExpensiveCountries = async () => {
-  const response = await axios.get(`${API_URL}/most-expensive`)
+const getTopExpensiveCountries = async () => {
+  const response = await axios.get(`${API_URL}/top-expensive`)
 
   return response.data
 }
 
-const getCheapestCountries = async () => {
-  const response = await axios.get(`${API_URL}/cheapest`)
+const getTopCheapestCountries = async () => {
+  const response = await axios.get(`${API_URL}/top-cheapest`)
 
   return response.data
 }
@@ -37,8 +36,8 @@ const pricesService = {
   getPrices,
   getPricesForCountry,
   getCountries,
-  getMostExpensiveCountries,
-  getCheapestCountries
+  getTopExpensiveCountries,
+  getTopCheapestCountries
 }
 
 export default pricesService
