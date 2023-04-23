@@ -69,10 +69,10 @@ namespace BigMacApi.Controllers
     {
       var response = await service.GetUniqueCountryNamesAsync();
 
-      var result = response.Select(c => new
+      var result = response.Select(country => new
       {
-        Name = c,
-        Link = Url.Action("GetCountry", "Prices", new { country = c.ToLower().Replace(" ", "-") }, Request.Scheme, HttpContext.Request.Host.Value)
+        Name = country,
+        Endpoint = country.ToLower().Replace(" ", "-")
       });
 
       return Ok(result);
