@@ -1,14 +1,36 @@
 import axios from 'axios'
 
-const getPrices = async () => {}
+const API_URL = process.env.REACT_APP_BIG_MAC_PRICES_API
 
-const getPricesForCountry = async () => {}
+const getPrices = async () => {
+  const response = await axios.get(API_URL)
 
-const getCountries = async () => {}
+  return response.data
+}
 
-const getMostExpensiveCountries = async () => {}
+const getPricesForCountry = async (country) => {
+  const response = await axios.get(`${API_URL}/countries/${country}`)
 
-const getCheapestCountries = async () => {}
+  return response.data
+}
+
+const getCountries = async () => {
+  const response = await axios.get(`${API_URL}/countries`)
+
+  return response.data
+}
+
+const getMostExpensiveCountries = async () => {
+  const response = await axios.get(`${API_URL}/most-expensive`)
+
+  return response.data
+}
+
+const getCheapestCountries = async () => {
+  const response = await axios.get(`${API_URL}/cheapest`)
+
+  return response.data
+}
 
 const pricesService = {
   getPrices,
