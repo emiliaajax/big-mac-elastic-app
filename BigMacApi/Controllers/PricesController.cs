@@ -22,7 +22,7 @@ namespace BigMacApi.Controllers
     }
 
     /// <summary>
-    /// Gets a list of all Big Mac prices with timestamps.
+    /// Returns a list of all Big Mac prices with timestamps.
     /// </summary>
     /// <returns>List of Big Mac prices.</returns>
     [HttpGet]
@@ -40,7 +40,7 @@ namespace BigMacApi.Controllers
     }
 
     /// <summary>
-    /// Gets a list of Big Mac prices for a specific country with timestamps.
+    /// Returns a list of Big Mac prices for a specific country with timestamps.
     /// </summary>
     /// <param name="country">The name of the country to get prices for.</param>
     /// <returns>List of Big Mac prices for the specified country.</returns>
@@ -61,7 +61,7 @@ namespace BigMacApi.Controllers
     }
 
     /// <summary>
-    /// Gets a list of unique country names that have Big Mac price data.
+    /// Returns a list of unique country names that have Big Mac price data.
     /// </summary>
     /// <returns>List of country names.</returns>
     [HttpGet("countries")]
@@ -79,7 +79,7 @@ namespace BigMacApi.Controllers
     }
 
     /// <summary>
-    /// Gets a list of the top most expensive countries for Big Macs within a given year range.
+    /// Returns a list of the top most expensive countries for Big Macs within a given year range.
     /// </summary>
     /// <param name="limit">The maximum number of countries to return.</param>
     /// <param name="startYear">The starting year for the price range.</param>
@@ -103,7 +103,7 @@ namespace BigMacApi.Controllers
     }
 
     /// <summary>
-    /// Gets a list of the top cheapest countries for Big Macs within a given year range.
+    /// Returns a list of the top cheapest countries for Big Macs within a given year range.
     /// </summary>
     /// <param name="limit">The maximum number of countries to return.</param>
     /// <param name="startYear">The starting year for the price range.</param>
