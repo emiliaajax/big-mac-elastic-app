@@ -1,5 +1,6 @@
 using BigMacApi.Services;
 using Elasticsearch.Net;
+using Microsoft.AspNetCore.HttpOverrides;
 using Nest;
 
 // Creating a new WebApplication instance
@@ -35,19 +36,27 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var AllowSpecificOrigins = "AllowSpecificOrigins";
+var allowSpecificOrigins = "AllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
 {
   options.AddPolicy(
-      name: AllowSpecificOrigins,
+      name: allowSpecificOrigins,
       policy =>
       {
-          policy.WithOrigins("http://localhost:3000");
+          policy.WithOrigins("http://localhost:3000", "https://bigmacapp.netlify.app");
       });
 });
 
 var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseForwardedHeaders(new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    });
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -56,9 +65,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(AllowSpecificOrigins);
+app.UseCors(allowSpecificOrigins);
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
 
