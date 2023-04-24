@@ -56,9 +56,9 @@ export const getTopExpensiveCountries = createAsyncThunk('countries/most-expensi
   }
 })
 
-export const getTopCheapestCountries = createAsyncThunk('countries/cheapest', async (thunkAPI) => {
+export const getTopCheapestCountries = createAsyncThunk('countries/cheapest', async ({limit, startYear, endYear}, thunkAPI) => {
   try {
-    return await pricesService.getTopCheapestCountries()
+    return await pricesService.getTopCheapestCountries(limit, startYear, endYear)
   } catch (error) {
     const message = error.response.data.message 
       || (error.response && error.response.data && error.response.message) 

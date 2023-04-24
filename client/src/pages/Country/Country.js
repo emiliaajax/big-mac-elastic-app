@@ -18,7 +18,7 @@ function Country () {
   return (
     <>
       { pricesForCountry
-      ? <><h1 id='countryName'>{pricesForCountry[0].name}</h1>
+      ? <><h1 className='pricesTitle'>{pricesForCountry[0].name}</h1>
       <LinePlot data={pricesForCountry} xAxisProperty="timeStamp" yAxisProperty="localPrice" lineName="Price" yAxisName={pricesForCountry[0].currencyCode}/></>
       : <></>
       }

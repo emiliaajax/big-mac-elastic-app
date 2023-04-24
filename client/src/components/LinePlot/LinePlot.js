@@ -3,8 +3,8 @@ import { LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts'
 function LinePlot ({ data, xAxisProperty, yAxisProperty, lineName, yAxisName}) {
   return (
     <LineChart
-      width={700}
-      height={500}
+      width={900}
+      height={600}
       data={data}
       margin={{
         top: 5,

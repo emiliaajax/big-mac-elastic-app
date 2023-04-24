@@ -13,6 +13,7 @@ function Home() {
 
   return (
     <>
+      <h1 className='pricesTitle'>Big Mac Prices 2000-2022</h1>
       <LinePlot data={prices} xAxisProperty="timeStamp" yAxisProperty="dollarPrice" lineName="Price" yAxisName="USD"/>
     </>
   )

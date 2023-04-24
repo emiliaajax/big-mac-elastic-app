@@ -1,0 +1,15 @@
+#yearMenu {
+  display: flex;
+  flex-direction: column;
+}
+
+.startYearMenu, .endYearMenu {
+  padding: 5px;
+  border-radius: 10px;
+  border: none;
+  margin-left: 10px;
+}
+
+.yearMenuTitle {
+  color: white;
+}

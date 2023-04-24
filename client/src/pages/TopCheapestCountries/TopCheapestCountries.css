@@ -1,0 +1,9 @@
+.topCountries {
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+}
+
+.topCountries div {
+  grid-row: 2/3;
+  margin-left: 30px;
+}

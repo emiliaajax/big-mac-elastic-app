@@ -4,7 +4,7 @@ function BoxPlot ({ data, barPropertyName, xAxisPropertyName }) {
   return ( 
     <BarChart
       width={1000}
-      height={500}
+      height={600}
       data={data}
       margin={{
         top: 5,

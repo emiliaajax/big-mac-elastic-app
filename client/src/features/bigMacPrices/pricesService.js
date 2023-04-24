@@ -26,8 +26,9 @@ const getTopExpensiveCountries = async () => {
   return response.data
 }
 
-const getTopCheapestCountries = async () => {
-  const response = await axios.get(`${API_URL}/top-cheapest`)
+const getTopCheapestCountries = async (limit, startYear, endYear) => {
+  const response = await axios.get(
+    `${API_URL}/top-cheapest?limit=${limit}&start-year=${startYear}&end-year=${endYear}`)
 
   return response.data
 }
