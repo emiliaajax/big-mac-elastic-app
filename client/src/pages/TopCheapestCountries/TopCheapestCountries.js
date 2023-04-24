@@ -10,7 +10,7 @@ function TopCheapestCountries () {
     <div className='topCountries'>
       <YearMenu cheapest={true} />
       <div>
-        <h1 className='pricesTitle'>Where to go to buy yourself a Big Mac</h1>
+        <h1 className='pricesTitle'>Top Cheapest Countries To Buy a Big Mac</h1>
         <BoxPlot data={cheapestCountries} xAxisPropertyName="name" barPropertyName="dollarPrice"/>
       </div>
     </div>

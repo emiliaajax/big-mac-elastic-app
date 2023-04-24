@@ -56,7 +56,7 @@ function YearMenu({ cheapest }) {
       <div id='yearMenu'>
         <div>
           <h3 className='yearMenuTitle'>Number of countries</h3>
-          <select className='endYearMenu' value={limit} onChange={handleLimitChange}>
+          <select className='yearMenu' value={limit} onChange={handleLimitChange}>
             <option value="">Number</option>
             {noOfCountries.map((number) => (
               <option key={number} value={number}>{number}</option>
@@ -65,7 +65,7 @@ function YearMenu({ cheapest }) {
         </div>
         <div>
           <h3 className='yearMenuTitle'>From</h3>
-          <select className='startYearMenu' value={startYear} onChange={handleStartYearChange}>
+          <select className='yearMenu' value={startYear} onChange={handleStartYearChange}>
             <option value="">Select a year</option>
             {years.map((year) => (
               <option key={year} value={year}>{year}</option>
@@ -74,7 +74,7 @@ function YearMenu({ cheapest }) {
         </div>
         <div>
           <h3 className='yearMenuTitle'>To</h3>
-          <select className='endYearMenu' value={endYear} onChange={handleEndYearChange}>
+          <select className='yearMenu' value={endYear} onChange={handleEndYearChange}>
             <option value="">Select a year</option>
             {years.map((year) => (
               <option key={year} value={year}>{year}</option>

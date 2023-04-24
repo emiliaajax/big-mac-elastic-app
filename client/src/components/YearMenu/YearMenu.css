@@ -3,7 +3,7 @@
   flex-direction: column;
 }
 
-.startYearMenu, .endYearMenu {
+.yearMenu {
   padding: 5px;
   border-radius: 10px;
   border: none;
@@ -12,4 +12,8 @@
 
 .yearMenuTitle {
   color: white;
+}
+
+.yearMenu:focus {
+  outline: none;
 }
