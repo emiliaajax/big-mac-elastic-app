@@ -49,6 +49,11 @@ namespace BigMacApi.Controllers
     {
       var prices = await service.GetCountryAsync(country);
 
+      if (!prices.Any())
+      {
+        return NotFound("No prices found.");
+      }
+
       var results = prices.Select(price => new
       {
         Name = price.name,
