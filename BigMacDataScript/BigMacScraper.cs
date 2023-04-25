@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 namespace BigMacDataScript
 {
     /// <summary>
-    /// Scrapes Big Mac price data from a local JSON file and returns it as a sequence of Price objects.
+    /// Class for scraping Big Mac price data from a local JSON file.
     /// </summary>
     public class BigMacScraper : IBigMacScraper
     {
