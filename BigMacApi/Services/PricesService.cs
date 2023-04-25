@@ -20,9 +20,9 @@ namespace BigMacApi.Services
     }
 
     /// <summary>
-    /// Gets a list of average Big Mac prices per year based on monthly data.
+    /// Returns a list of average Big Mac prices.
     /// </summary>
-    /// <returns>List of PricePerYear objects.</returns>
+    /// <returns>List of PriceData objects.</returns>
     public async Task<List<PriceData>> GetAsync()
     {
       var response = await elasticClient.SearchAsync<PriceData>(s => s
@@ -60,10 +60,10 @@ namespace BigMacApi.Services
     }
 
     /// <summary>
-    /// Gets a list of average Big Mac prices per year for a specific country.
+    /// Returns a list of Big Mac prices for a specific country.
     /// </summary>
     /// <param name="name">The name of the country.</param>
-    /// <returns>List of CountryPricePerYear objects.</returns>
+    /// <returns>List of PriceData objects.</returns>
     public async Task<List<PriceData>> GetCountryAsync(string name)
     {
       var response = await elasticClient.SearchAsync<PriceData>(s => s
@@ -118,7 +118,7 @@ namespace BigMacApi.Services
     }
 
     /// <summary>
-    /// Gets a list of unique country names that have Big Mac price
+    /// Gets a list of unique country names that have Big Mac prices.
     /// </summary>
     /// <returns>List of country names.</returns>
     public async Task<List<string>> GetUniqueCountryNamesAsync()
@@ -141,13 +141,13 @@ namespace BigMacApi.Services
     }
 
     /// <summary>
-    /// Gets a list of the top N most expensive countries based on their average Big Mac price within a specific date range.
+    /// Returns a list of the top most expensive countries and there prices within a specific date range.
     /// </summary>
-    /// <param name="limit">The maximum number of countries to return.</param>
+    /// <param name="limit">The number of countries to return.</param>
     /// <param name="startYear">The start year of the date range.</param>
     /// <param name="endYear">The end year of the date range.</param>
-    /// <returns>List of Country objects.</returns>
-    public async Task<List<PriceData>> GetMostExpensiveCountries(int limit, string startYear, string endYear)
+    /// <returns>List of PriceData objects.</returns>
+    public async Task<List<PriceData>> GetMostExpensiveCountriesAsync(int limit, string startYear, string endYear)
     {
       var response = await elasticClient.SearchAsync<PriceData>(s => s
           .Index("bigmacpricesdata")
@@ -196,13 +196,13 @@ namespace BigMacApi.Services
     }
 
     /// <summary>
-    /// Gets a list of the top N cheapest countries based on their average Big Mac price within a specific date range.
+    /// Returns a list of the top cheapest countries with Big Mac prices within a specific date range.
     /// </summary>
     /// <param name="limit">The maximum number of countries to return.</param>
     /// <param name="startYear">The start year of the date range.</param>
     /// <param name="endYear">The end year of the date range.</param>
-    /// <returns>List of Country objects.</returns>
-    public async Task<List<PriceData>> GetCheapestCountries(int limit, string startYear, string endYear)
+    /// <returns>List of PriceData objects.</returns>
+    public async Task<List<PriceData>> GetCheapestCountriesAsync(int limit, string startYear, string endYear)
     {
       var response = await elasticClient.SearchAsync<PriceData>(s => s
         .Index("bigmacpricesdata")
