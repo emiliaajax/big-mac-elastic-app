@@ -1,5 +1,11 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts'
 
+/**
+ * LinePlot component.
+ * 
+ * @param {object} props The properties used by the component.
+ * @returns {React.ReactElement} LinePlot component.
+ */
 function LinePlot ({ data, xAxisProperty, yAxisProperty, lineName, yAxisName}) {
   return (
     <LineChart

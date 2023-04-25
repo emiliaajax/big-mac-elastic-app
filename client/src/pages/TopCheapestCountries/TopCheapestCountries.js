@@ -3,6 +3,11 @@ import BoxPlot from '../../components/BoxPlot/BoxPlot.js'
 import YearMenu from '../../components/YearMenu/YearMenu.js'
 import './TopCheapestCountries.css'
 
+/**
+ * The TopCheapestCountries component.
+ *
+ * @returns {React.ReactElement} TopCheapestCountries component.
+ */
 function TopCheapestCountries () {
   const { cheapestCountries } = useSelector((state) => state.prices)
 

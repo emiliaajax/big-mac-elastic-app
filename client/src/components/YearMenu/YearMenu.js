@@ -3,6 +3,13 @@ import './YearMenu.css'
 import { useDispatch } from 'react-redux'
 import { getTopCheapestCountries, getTopExpensiveCountries } from '../../features/bigMacPrices/pricesSlice.js'
 
+/**
+ * YearMenu component.
+ * This component has been developed with the help of ChatGPT.
+ *
+ * @param {object} props The properties used by the component.
+ * @returns YearMenu component.
+ */
 function YearMenu({ cheapest }) {
   const dispatch = useDispatch()
 

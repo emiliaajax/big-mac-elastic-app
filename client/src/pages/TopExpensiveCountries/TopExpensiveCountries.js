@@ -2,6 +2,11 @@ import { useSelector } from 'react-redux'
 import BoxPlot from '../../components/BoxPlot/BoxPlot.js'
 import YearMenu from '../../components/YearMenu/YearMenu.js'
 
+/**
+ * The TopExpensiveCountries component.
+ *
+ * @returns {React.ReactElement} TopExpensiveCountries component.
+ */
 function TopExpensiveCountries () {
   const { expensiveCountries } = useSelector((state) => state.prices)
 

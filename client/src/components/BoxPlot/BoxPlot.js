@@ -1,5 +1,11 @@
 import { Bar, BarChart, Tooltip, XAxis, YAxis } from 'recharts'
 
+/**
+ * A BoxPlot component.
+ * 
+ * @param {object} props The properties used by the component.
+ * @returns {React.ReactElement} BoxPlot component.
+ */
 function BoxPlot ({ data, barPropertyName, xAxisPropertyName }) {
   return ( 
     <BarChart

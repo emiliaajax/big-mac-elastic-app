@@ -4,6 +4,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { getCountries } from '../../features/bigMacPrices/pricesSlice.js'
 
+/**
+ * TopBar component.
+ * 
+ * @returns {React.ReactElement} TopBar component.
+ */
 function TopBar () {
   const location = useLocation()
   const dispatch = useDispatch()

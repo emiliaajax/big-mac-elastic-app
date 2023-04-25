@@ -5,6 +5,11 @@ import LinePlot from '../../components/LinePlot/LinePlot.js'
 import { useParams } from 'react-router-dom'
 import './Country.css'
 
+/**
+ * The Country component.
+ *
+ * @returns {React.ReactElement} Country component.
+ */
 function Country () {
   const dispatch = useDispatch()
 

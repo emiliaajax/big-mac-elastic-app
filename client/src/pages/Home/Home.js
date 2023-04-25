@@ -3,6 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getPrices } from '../../features/bigMacPrices/pricesSlice.js'
 import LinePlot from '../../components/LinePlot/LinePlot.js'
 
+/**
+ * The Home component.
+ *
+ * @returns {React.ReactElement} Home component.
+ */
 function Home() {
   const dispatch = useDispatch()
   const { prices } = useSelector((state) => state.prices)

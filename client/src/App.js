@@ -5,6 +5,11 @@ import Country from './pages/Country/Country.js'
 import TopExpensiveCountries from './pages/TopExpensiveCountries/TopExpensiveCountries.js'
 import TopCheapestCountries from './pages/TopCheapestCountries/TopCheapestCountries.js'
 
+/**
+ * The App component.
+ * 
+ * @returns {React.ReactElement} App component.
+ */
 function App() {
   return (
     <>
