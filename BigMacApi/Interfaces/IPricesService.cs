@@ -18,7 +18,7 @@ namespace BigMacApi.Services
         /// </summary>
         /// <param name="name">The name of the country.</param>
         /// <returns>List of PriceData objects.</returns>
-        public Task<List<PriceData>> GetCountryAsync(string name);
+        public Task<List<PriceData>> GetCountryAsync(string countryName);
 
         /// <summary>
         /// Gets a list of unique country names that have Big Mac prices.
