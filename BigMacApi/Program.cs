@@ -50,6 +50,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Check if app is not running in development mode and enable forwarding of headers
 if (!app.Environment.IsDevelopment())
 {
     app.UseForwardedHeaders(new ForwardedHeadersOptions

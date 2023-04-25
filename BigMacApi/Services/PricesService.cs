@@ -1,6 +1,7 @@
 using BigMacApi.Models;
 using Nest;
 
+// The methods in this service have been partly developed by consulting ChatGPT.
 namespace BigMacApi.Services
 {
   /// <summary>
