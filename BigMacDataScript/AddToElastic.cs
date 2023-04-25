@@ -28,6 +28,17 @@ namespace BigMacDataScript
             var batchSize = 200;
             var shipped = 0;
 
+            var indexExistsResponse = await elasticClient.Indices.ExistsAsync(index);
+
+            // Delete the contents of the index if it exists (developed with the help of ChatGPT)
+            if (indexExistsResponse.Exists)
+            {
+                await elasticClient.DeleteByQueryAsync<Price>(d => d
+                    .Index(index)
+                    .Query(q => q.MatchAll())
+                );
+            }
+
             while (data.Skip(shipped).Take(batchSize).Any())
             {
                 var batch = data.Skip(shipped).Take(batchSize);
