@@ -26,16 +26,16 @@ namespace BigMacApi.Services
     /// <returns>List of PriceData objects.</returns>
     public async Task<List<PriceData>> GetAsync()
     {
-      var response = await elasticClient.SearchAsync<PriceData>(search => search
+      var response = await elasticClient.SearchAsync<PriceData>(s => s
           .Index("bigmacpricesdata")
           .Size(0)
-          .Aggregations(aggregation => aggregation
-              .DateHistogram("pricesOverTime", dateHistogram => dateHistogram
-                  .Field(field => field.TimeStamp)
+          .Aggregations(a => a
+              .DateHistogram("pricesOverTime", dh => dh
+                  .Field(f => f.TimeStamp)
                   .CalendarInterval(DateInterval.Month)
-                  .Aggregations(aggregation2 => aggregation2
-                      .Average("averagePrice", average => average
-                          .Field(field => field.dollar_price)
+                  .Aggregations(aa => aa
+                      .Average("averagePrice", avg => avg
+                          .Field(f => f.dollar_price)
                       )
                   )
               )
@@ -67,32 +67,32 @@ namespace BigMacApi.Services
     /// <returns>List of PriceData objects.</returns>
     public async Task<List<PriceData>> GetCountryAsync(string countryName)
     {
-      var response = await elasticClient.SearchAsync<PriceData>(search => search
+      var response = await elasticClient.SearchAsync<PriceData>(s => s
           .Index("bigmacpricesdata")
           .Size(1)
-          .Query(query => query
-              .MatchPhrase(match => match
-                  .Field(field => field.name)
+          .Query(q => q
+              .MatchPhrase(m => m
+                  .Field(f => f.name)
                   .Query(countryName)
                   .Analyzer("standard")
               )
           )
-          .Aggregations(aggregation => aggregation
-              .DateHistogram("pricesOverTime", dateHistogram => dateHistogram
-                  .Field(field => field.TimeStamp)
+          .Aggregations(a => a
+              .DateHistogram("pricesOverTime", dh => dh
+                  .Field(f => f.TimeStamp)
                   .CalendarInterval(DateInterval.Month)
-                          .Aggregations(aggregation2 => aggregation2
-                              .Average("averagePrice", average => average
-                                  .Field(field => field.local_price)
+                          .Aggregations(aa => aa
+                              .Average("averagePrice", avg => avg
+                                  .Field(f => f.local_price)
                               )
                           )
               )
           )
-          .Source(source => source
-              .Includes(include => include
+          .Source(src => src
+              .Includes(i => i
                   .Fields(
-                      field => field.name,
-                      field => field.currency_code
+                      f => f.name,
+                      f => f.currency_code
                   )
               )
           )
@@ -124,12 +124,12 @@ namespace BigMacApi.Services
     /// <returns>List of country names.</returns>
     public async Task<List<string>> GetUniqueCountryNamesAsync()
     {
-      var response = await elasticClient.SearchAsync<PriceData>(search => search
+      var response = await elasticClient.SearchAsync<PriceData>(s => s
           .Index("bigmacpricesdata")
           .Size(0)
-          .Aggregations(aggregation => aggregation
-              .Terms("countries", term => term
-                  .Field(field => field.name.Suffix("keyword"))
+          .Aggregations(a => a
+              .Terms("countries", t => t
+                  .Field(f => f.name.Suffix("keyword"))
                   .Size(int.MaxValue)
               )
           )
@@ -150,26 +150,26 @@ namespace BigMacApi.Services
     /// <returns>List of PriceData objects.</returns>
     public async Task<List<PriceData>> GetMostExpensiveCountriesAsync(int limit, string startYear, string endYear)
     {
-      var response = await elasticClient.SearchAsync<PriceData>(search => search
+      var response = await elasticClient.SearchAsync<PriceData>(s => s
           .Index("bigmacpricesdata")
           .Size(0)
-          .Query(query => query
-              .DateRange(range => range
-                  .Field(field => field.TimeStamp)
+          .Query(q => q
+              .DateRange(r => r
+                  .Field(f => f.TimeStamp)
                   .GreaterThanOrEquals($"{startYear}-01-01||/d")
                   .LessThanOrEquals($"{endYear}-12-31||/d")
               )
           )
-          .Aggregations(aggregation => aggregation
-              .Terms("countries", term => term
+          .Aggregations(a => a
+              .Terms("countries", t => t
                   .Field("name.keyword")
                   .Size(limit)
-                  .Order(order => order
+                  .Order(o => o
                       .Descending("averagePrice")
                   )
-                  .Aggregations(aggregation2 => aggregation2
+                  .Aggregations(aa => aa
                       .Average("averagePrice", price => price
-                          .Field(field => field.dollar_price)
+                          .Field(f => f.dollar_price)
                       )
                   )
               )
@@ -208,23 +208,23 @@ namespace BigMacApi.Services
       var response = await elasticClient.SearchAsync<PriceData>(s => s
         .Index("bigmacpricesdata")
         .Size(0)
-        .Query(query => query
-            .DateRange(range => range
-                .Field(field => field.TimeStamp)
+        .Query(q => q
+            .DateRange(r => r
+                .Field(f => f.TimeStamp)
                 .GreaterThanOrEquals($"{startYear}-01-01||/d")
                 .LessThanOrEquals($"{endYear}-12-31||/d")
             )
         )
-        .Aggregations(ag => ag
+        .Aggregations(a => a
             .Terms("countries", t => t
                 .Field("name.keyword")
                 .Size(limit)
-                .Order(order => order
+                .Order(o => o
                     .Ascending("avg_price")
                 )
-                .Aggregations(ag1 => ag1
+                .Aggregations(aa => aa
                     .Average("avg_price", price => price
-                        .Field(f2 => f2.dollar_price)
+                        .Field(f => f.dollar_price)
                     )
                 )
             )
